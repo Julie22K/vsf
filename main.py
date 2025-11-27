@@ -1,15 +1,25 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
 import base64
 import cv2
 import numpy as np
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel
 from framework.processor import Processor
 
 app = FastAPI()
 processor = Processor()
 
+# CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["https://vsf2.onrender.com"],  # фронтенд
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class Frame(BaseModel):
-    image: str  # base64 string
+    image: str
 
 @app.post("/detect")
 async def detect(frame: Frame):
